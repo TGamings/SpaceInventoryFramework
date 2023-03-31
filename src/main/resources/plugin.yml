@@ -1,0 +1,6 @@
+name: InventoryTest
+version: '1.0'
+main: net.spacetivity.inventory.SpaceInventoryBootstrap
+api-version: 1.19
+authors:
+  - TGamings

@@ -1,32 +1,30 @@
 package net.spacetivity.inventory
 
-import net.spacetivity.inventory.api.InventoryController
-import net.spacetivity.inventory.item.InteractiveItem
-import net.spacetivity.inventory.item.ItemEnchantment
-import org.bukkit.Material
-import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
+import net.spacetivity.inventory.logic.InventoryPlayerListener
+import net.spacetivity.inventory.logic.InventoryRepository
+import org.bukkit.plugin.java.JavaPlugin
 
-class SpaceInventoryBootstrap {
+class SpaceInventoryBootstrap : JavaPlugin() {
 
+    lateinit var inventoryRepository: InventoryRepository
 
+    init {
+        instance = this
+    }
 
-    fun init(controller: InventoryController) {
-        val itemStack = ItemStack(Material.SADDLE)
+    override fun onEnable() {
+        this.inventoryRepository = InventoryRepository()
+        server.pluginManager.registerEvents(InventoryPlayerListener(), this)
+    }
 
-        val item: InteractiveItem = InteractiveItem.of(itemStack) {position, event ->
-            val player = event.whoClicked as Player
-            player.closeInventory()
-        }
+    override fun onDisable() {
 
-        item.update(InteractiveItem.Modification.DISPLAY_NAME, "<green>Neuer Name!")
-        item.update(InteractiveItem.Modification.LORE, arrayOf("First Line", "Second Line"))
-        item.update(InteractiveItem.Modification.AMOUNT, 10)
-        item.update(InteractiveItem.Modification.GLOWING)
-        item.update(InteractiveItem.Modification.ENCHANTMENTS, ItemEnchantment.of(Enchantment.DURABILITY, 1, true))
+    }
 
-
+    companion object {
+        @JvmStatic
+        lateinit var instance: SpaceInventoryBootstrap
+            private set
     }
 
 }

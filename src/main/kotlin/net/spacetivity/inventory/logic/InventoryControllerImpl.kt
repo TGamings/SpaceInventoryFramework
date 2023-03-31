@@ -18,7 +18,10 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
 
     // constructs the default content map
     override fun constructEmptyContent() {
-        for (i in 0..this.inventorySlotCount) this.contents[MathUtils.slotToPosition(i)] = null
+        for (i in 0 until this.inventorySlotCount) {
+            println("filling slot $i")
+            this.contents[MathUtils.slotToPosition(i, this.inventory.size.columns)] = null
+        }
     }
 
     override fun placeholder(pos: InventoryPosition, material: Material) {
@@ -34,6 +37,7 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
     }
 
     override fun setItem(pos: InventoryPosition, item: InteractiveItem) {
+        println("SET ITEM TO POS $pos")
         contents[pos] = item
     }
 
@@ -44,7 +48,7 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
 
     override fun addItemToRandomPosition(item: InteractiveItem) {
         val randomSlotCount = ThreadLocalRandom.current().nextInt(this.inventorySlotCount)
-        val randomPosition = MathUtils.slotToPosition(randomSlotCount)
+        val randomPosition = MathUtils.slotToPosition(randomSlotCount, this.inventory.size.columns)
         if (isPositionTaken(randomPosition)) return
         setItem(randomPosition, item)
     }
@@ -74,16 +78,20 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
         }
     }
 
-    override fun fill(direction: InventoryController.FillDirection, item: InteractiveItem, vararg positions: InventoryPosition) {
+    override fun fill(
+        direction: InventoryController.FillDirection,
+        item: InteractiveItem,
+        vararg positions: InventoryPosition
+    ) {
         when (direction) {
             ROW -> {
                 if (positions.size > 1)
                     throw IllegalArgumentException("To fill a row only 1 position is allowed. Used positions: ${positions.size}")
 
-                val startSlot = MathUtils.positionToSlot(positions[0])
+                val startSlot = MathUtils.positionToSlot(positions[0], this.inventory.size.columns)
 
                 for (currentSlot in startSlot..(startSlot + this.inventory.size.columns)) {
-                    val currentPosition = MathUtils.slotToPosition(currentSlot)
+                    val currentPosition = MathUtils.slotToPosition(currentSlot, this.inventory.size.columns)
                     setItem(currentPosition, item)
                 }
             }
@@ -110,32 +118,32 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
             }
 
             LEFT_BORDER -> {
-                for (slot in 0 until this.inventorySlotCount step this.inventory.size.rows) {
-                    val currentPosition = InventoryPosition.of(slot)
+                for (currentSlot in 0 until this.inventorySlotCount step this.inventory.size.rows) {
+                    val currentPosition = MathUtils.slotToPosition(currentSlot, this.inventory.size.columns)
                     setItem(currentPosition, item)
                 }
             }
 
             RIGHT_BORDER -> {
-                for (slot in this.inventory.size.rows - 1 until this.inventorySlotCount step this.inventory.size.rows) {
-                    val currentPosition = InventoryPosition.of(slot)
+                for (currentSlot in this.inventory.size.rows - 1 until this.inventorySlotCount step this.inventory.size.rows) {
+                    val currentPosition = MathUtils.slotToPosition(currentSlot, this.inventory.size.columns)
                     setItem(currentPosition, item)
                 }
             }
 
             TOP_BORDER -> {
-                for (slot in 0 until this.inventory.size.columns) {
-                    val currentPosition = InventoryPosition.of(slot)
+                for (currentSlot in 0 until this.inventory.size.columns) {
+                    val currentPosition = MathUtils.slotToPosition(currentSlot, this.inventory.size.columns)
                     setItem(currentPosition, item)
                 }
             }
 
             BOTTOM_BORDER -> {
                 val size = this.inventorySlotCount
-                val firstColumnInLastRow = size - this.inventory.size.rows
+                val firstColumnInLastRow = size - this.inventory.size.columns
 
-                for (slot in firstColumnInLastRow until size) {
-                    val currentPosition = InventoryPosition.of(slot)
+                for (currentSlot in firstColumnInLastRow until size) {
+                    val currentPosition = MathUtils.slotToPosition(currentSlot, this.inventory.size.columns)
                     setItem(currentPosition, item)
                 }
             }
@@ -151,7 +159,7 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
 
     override fun clearSlot(pos: InventoryPosition) {
         this.contents[pos] = null
-        getRawInventory().clear(MathUtils.positionToSlot(pos))
+        getRawInventory().clear(MathUtils.positionToSlot(pos, this.inventory.size.columns))
     }
 
     override fun isPositionTaken(pos: InventoryPosition): Boolean {
@@ -160,27 +168,38 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
 
     override fun getFirstEmptySlot(): InventoryPosition? {
         var emptyPosition: InventoryPosition? = null
-        for (position in this.contents.keys) if (this.contents[position] == null) emptyPosition = position
+
+        for (position in this.contents.keys) if (this.contents[position] == null) {
+            emptyPosition = position
+            break
+        }
+
         return emptyPosition
     }
 
     override fun getItem(position: InventoryPosition): InteractiveItem? {
-        TODO("Not yet implemented")
+        return this.contents[position]
     }
 
     override fun getItem(row: Int, column: Int): InteractiveItem? {
-        TODO("Not yet implemented")
+        return this.contents[InventoryPosition.of(row, column)]
     }
 
     override fun findFirstItemWithType(material: Material): Pair<InventoryPosition, InteractiveItem>? {
-        TODO("Not yet implemented")
-    }
+        var result: Pair<InventoryPosition, InteractiveItem>? = null
 
-    override fun findFirstItemWithName(displayName: String): Pair<InventoryPosition, InteractiveItem>? {
-        TODO("Not yet implemented")
+        for (slot in 0..this.inventorySlotCount) {
+            val currentPosition = MathUtils.slotToPosition(slot, this.inventory.size.columns)
+            if (this.contents[currentPosition] == null) continue
+            if (this.contents[currentPosition]?.item == null) continue
+            if (this.contents[currentPosition] != null && this.contents[currentPosition]!!.item.type == material)
+                result = Pair(currentPosition, this.contents[currentPosition]!!)
+        }
+
+        return result
     }
 
     override fun getRawInventory(): Inventory {
-        TODO("Not yet implemented")
+        return this.inventory.rawInventory
     }
 }

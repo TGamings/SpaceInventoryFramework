@@ -4,20 +4,15 @@ import net.spacetivity.inventory.item.InventoryPosition
 
 object MathUtils {
 
-    /**
-     * Refactors a bukkit slot (row * column) to a {@see InventoryPosition}
-     */
-    fun slotToPosition(slot: Int): InventoryPosition {
-        val row = slot / 9
-        val column = slot % 9
+    fun slotToPosition(slot: Int, columns: Int): InventoryPosition {
+        val row = slot / columns
+        val column = slot % columns
         return InventoryPosition(row, column)
     }
 
-    /**
-     * Refactors a {@see InventoryPosition} to a slot (row * column)
-     */
-    fun positionToSlot(position: InventoryPosition): Int {
-        return position.row * position.column
+    fun positionToSlot(position: InventoryPosition, columns: Int): Int {
+        println(position.row * columns + position.column)
+        return position.row * columns + position.column
     }
 
 }

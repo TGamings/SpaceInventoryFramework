@@ -8,9 +8,11 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class TestInventory : CustomInventory(InventorySize.of(3, 9), "Test Inventory", false) {
+class TestInventory(holder: Player) : CustomInventory(holder, InventorySize.of(3, 9), "Test Inventory", false) {
 
     override fun setupInventory(holder: Player, controller: InventoryController) {
+
+        //controller.fill(InventoryController.FillDirection.TOP_BORDER, InteractiveItem.placeholder(Material.BLUE_STAINED_GLASS_PANE))
 
         controller.fill(InventoryController.FillDirection.BOTTOM_BORDER, InteractiveItem.placeholder(Material.BLUE_STAINED_GLASS_PANE))
 

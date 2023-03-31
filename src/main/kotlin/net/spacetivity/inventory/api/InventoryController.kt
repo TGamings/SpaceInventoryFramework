@@ -37,7 +37,6 @@ interface InventoryController {
     fun getItem(position: InventoryPosition): InteractiveItem?
     fun getItem(row: Int, column: Int): InteractiveItem?
     fun findFirstItemWithType(material: Material): Pair<InventoryPosition, InteractiveItem>?
-    fun findFirstItemWithName(displayName: String): Pair<InventoryPosition, InteractiveItem>?
 
     // utility functions
 
