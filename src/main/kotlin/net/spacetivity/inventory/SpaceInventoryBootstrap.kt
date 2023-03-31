@@ -1,12 +1,11 @@
 package net.spacetivity.inventory
 
+import net.spacetivity.inventory.api.InventoryController
 import net.spacetivity.inventory.item.InteractiveItem
 import net.spacetivity.inventory.item.ItemEnchantment
-import net.spacetivity.inventory.api.InventoryController
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 
 class SpaceInventoryBootstrap {
@@ -16,7 +15,7 @@ class SpaceInventoryBootstrap {
     fun init(controller: InventoryController) {
         val itemStack = ItemStack(Material.SADDLE)
 
-        val item: InteractiveItem = InteractiveItem.of(itemStack) {event: InventoryClickEvent ->
+        val item: InteractiveItem = InteractiveItem.of(itemStack) {position, event ->
             val player = event.whoClicked as Player
             player.closeInventory()
         }
