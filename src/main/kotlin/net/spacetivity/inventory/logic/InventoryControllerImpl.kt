@@ -3,7 +3,7 @@ package net.spacetivity.inventory.logic
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.spacetivity.inventory.api.CustomInventory
 import net.spacetivity.inventory.api.InventoryController
-import net.spacetivity.inventory.api.InventoryController.FillDirection.*
+import net.spacetivity.inventory.api.InventoryController.FillType.*
 import net.spacetivity.inventory.item.InteractiveItem
 import net.spacetivity.inventory.item.InventoryPosition
 import net.spacetivity.inventory.utils.MathUtils
@@ -18,10 +18,8 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
 
     // constructs the default content map
     override fun constructEmptyContent() {
-        for (i in 0 until this.inventorySlotCount) {
-            println("filling slot $i")
+        for (i in 0 until this.inventorySlotCount)
             this.contents[MathUtils.slotToPosition(i, this.inventory.size.columns)] = null
-        }
     }
 
     override fun placeholder(pos: InventoryPosition, material: Material) {
@@ -37,7 +35,6 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
     }
 
     override fun setItem(pos: InventoryPosition, item: InteractiveItem) {
-        println("SET ITEM TO POS $pos")
         contents[pos] = item
     }
 
@@ -79,7 +76,7 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
     }
 
     override fun fill(
-        direction: InventoryController.FillDirection,
+        direction: InventoryController.FillType,
         item: InteractiveItem,
         vararg positions: InventoryPosition
     ) {
@@ -125,7 +122,16 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
             }
 
             RIGHT_BORDER -> {
-                for (currentSlot in this.inventory.size.rows - 1 until this.inventorySlotCount step this.inventory.size.rows) {
+                val rowSize = this.inventory.size.rows
+                val lastColumnStart = rowSize - 1
+                val lastColumnEnd = this.inventorySlotCount - 1
+
+                for (currentSlot in lastColumnStart..lastColumnEnd step rowSize) {
+                    val currentPos = MathUtils.slotToPosition(currentSlot, this.inventory.size.columns)
+                    val nextPos = MathUtils.nextPositionFromSlot(currentSlot, this.inventory.size.columns)
+
+                    if (currentPos.row == nextPos.row) continue
+
                     val currentPosition = MathUtils.slotToPosition(currentSlot, this.inventory.size.columns)
                     setItem(currentPosition, item)
                 }

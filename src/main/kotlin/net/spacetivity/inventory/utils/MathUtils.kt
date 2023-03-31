@@ -11,8 +11,12 @@ object MathUtils {
     }
 
     fun positionToSlot(position: InventoryPosition, columns: Int): Int {
-        println(position.row * columns + position.column)
         return position.row * columns + position.column
+    }
+
+    fun nextPositionFromSlot(slot: Int, columns: Int): InventoryPosition {
+        val nextSlot = slot + 1
+        return slotToPosition(nextSlot, columns)
     }
 
 }

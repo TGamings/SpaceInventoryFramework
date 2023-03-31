@@ -12,6 +12,7 @@ interface InventoryController {
     val contents: MutableMap<InventoryPosition, InteractiveItem?>
 
     fun constructEmptyContent()
+
     // item functions
 
     fun placeholder(pos: InventoryPosition, material: Material)
@@ -23,16 +24,13 @@ interface InventoryController {
     fun removeItem(displayName: String)
     fun removeItem(material: Material)
 
-    fun fill(direction: FillDirection, item: InteractiveItem, vararg positions: InventoryPosition)
+    fun fill(direction: FillType, item: InteractiveItem, vararg positions: InventoryPosition)
 
     // slot functions
 
     fun clearSlot(pos: InventoryPosition)
 
     fun isPositionTaken(pos: InventoryPosition): Boolean
-    /**
-     * Return value is null if there is no empty slot
-     */
     fun getFirstEmptySlot(): InventoryPosition?
     fun getItem(position: InventoryPosition): InteractiveItem?
     fun getItem(row: Int, column: Int): InteractiveItem?
@@ -42,13 +40,13 @@ interface InventoryController {
 
     fun getRawInventory(): Inventory
 
-    enum class FillDirection {
+    enum class FillType {
         ROW,
         RECTANGLE,
         LEFT_BORDER,
-        RIGHT_BORDER,
-        TOP_BORDER,
-        BOTTOM_BORDER,
+        RIGHT_BORDER, //DONE
+        TOP_BORDER, // DONE
+        BOTTOM_BORDER, // DONE
         ALL_BORDERS
     }
 }

@@ -23,9 +23,6 @@ abstract class CustomInventory(val holder: Player, val size: InventorySize, val 
         for (content in this.controller.contents) {
             val position: InventoryPosition = content.key
             val interactiveItem: InteractiveItem = content.value ?: continue
-
-            println("LAST POSITION $position has slot ${MathUtils.positionToSlot(position, this.size.columns)}")
-
             rawInventory.setItem(MathUtils.positionToSlot(position, this.size.columns), interactiveItem.item)
         }
     }
