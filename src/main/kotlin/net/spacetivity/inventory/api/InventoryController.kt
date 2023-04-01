@@ -24,7 +24,7 @@ interface InventoryController {
     fun removeItem(displayName: String)
     fun removeItem(material: Material)
 
-    fun fill(direction: FillType, item: InteractiveItem, vararg positions: InventoryPosition)
+    fun fill(type: FillType, item: InteractiveItem, vararg positions: InventoryPosition)
 
     // slot functions
 

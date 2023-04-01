@@ -76,11 +76,11 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
     }
 
     override fun fill(
-        direction: InventoryController.FillType,
+        type: InventoryController.FillType,
         item: InteractiveItem,
         vararg positions: InventoryPosition
     ) {
-        when (direction) {
+        when (type) {
             ROW -> {
                 if (positions.size > 1)
                     throw IllegalArgumentException("To fill a row only 1 position is allowed. Used positions: ${positions.size}")
@@ -95,7 +95,7 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
 
             RECTANGLE -> {
                 if (positions.size != 2)
-                    throw IllegalArgumentException("Only to positions are allowed to create an rectangle!")
+                    throw IllegalArgumentException("Only two positions are allowed to create an rectangle!")
 
                 val fromPos: InventoryPosition = positions[0]
                 val toPos: InventoryPosition = positions[1]
