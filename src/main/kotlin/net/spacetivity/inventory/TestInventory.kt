@@ -20,7 +20,7 @@ class TestInventory(holder: Player) : CustomInventory(holder, InventorySize.of(3
         )
 
         controller.addItemToRandomPosition(placeholder)
-
+//1
 //        controller.addItem(InteractiveItem.of(ItemStack(Material.SADDLE)) { pos, event ->
 //            val player = event.whoClicked as Player
 //            val currentItem = controller.getItem(pos)!!
