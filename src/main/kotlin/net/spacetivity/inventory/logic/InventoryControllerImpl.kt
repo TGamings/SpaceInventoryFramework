@@ -4,6 +4,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.spacetivity.inventory.api.CustomInventory
 import net.spacetivity.inventory.api.InventoryController
 import net.spacetivity.inventory.api.InventoryController.FillType.*
+import net.spacetivity.inventory.api.InventoryPagination
 import net.spacetivity.inventory.item.InteractiveItem
 import net.spacetivity.inventory.item.InventoryPosition
 import net.spacetivity.inventory.utils.MathUtils
@@ -16,7 +17,8 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
     override val inventorySlotCount: Int = this.inventory.inventorySlotCount
     override val contents: MutableMap<InventoryPosition, InteractiveItem?> = mutableMapOf()
 
-    // constructs the default content map
+    private var pagination: InventoryPagination? = null
+
     override fun constructEmptyContent() {
         for (i in 0 until this.inventorySlotCount)
             this.contents[MathUtils.slotToPosition(i, this.inventory.size.columns)] = null
@@ -209,6 +211,11 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
         }
 
         return result
+    }
+
+    override fun createPagination(): InventoryPagination {
+        if (this.pagination == null) this.pagination = InventoryPaginationImpl(this)
+        return this.pagination!!
     }
 
     override fun getRawInventory(): Inventory {

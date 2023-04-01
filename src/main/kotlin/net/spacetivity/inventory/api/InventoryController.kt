@@ -38,7 +38,7 @@ interface InventoryController {
     fun findFirstItemWithType(material: Material): Pair<InventoryPosition, InteractiveItem>?
 
     // utility functions
-
+    fun createPagination(): InventoryPagination
     fun getRawInventory(): Inventory
 
     enum class FillType {

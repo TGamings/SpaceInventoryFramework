@@ -27,8 +27,7 @@ abstract class CustomInventory(private val holder: Player, val size: InventorySi
     }
 
     private fun construct() {
-        this.rawInventory =
-            Bukkit.createInventory(this.holder, this.size.rows * this.size.columns, Component.text(this.title))
+        this.rawInventory = Bukkit.createInventory(this.holder, this.size.rows * this.size.columns, Component.text(this.title))
         this.controller = InventoryControllerImpl(this)
         this.controller.constructEmptyContent()
         setupInventory(this.holder, this.controller)
@@ -36,6 +35,10 @@ abstract class CustomInventory(private val holder: Player, val size: InventorySi
         this.usableSlots = mutableListOf()
         setupUsableSlots(this.usableSlots)
 
+        updateRawInventory()
+    }
+
+    fun updateRawInventory() {
         for (content in this.controller.contents) {
             val position: InventoryPosition = content.key
             val interactiveItem: InteractiveItem = content.value ?: continue
