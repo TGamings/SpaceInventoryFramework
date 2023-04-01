@@ -20,7 +20,7 @@ class TestInventory(holder: Player) : CustomInventory(holder, InventorySize.of(3
             InventoryPosition.of(1, 1)
         )
 
-        controller.addItemToRandomPosition(placeholder)
+        //controller.addItemToRandomPosition(placeholder)
 
         controller.addItem(InteractiveItem.of(ItemStack(Material.SADDLE)) { pos, event ->
             val player = event.whoClicked as Player
