@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom
 
 class InventoryControllerImpl(override val inventory: CustomInventory) : InventoryController {
 
-    override val inventorySlotCount: Int = inventory.size.rows * inventory.size.columns
+    override val inventorySlotCount: Int = this.inventory.inventorySlotCount
     override val contents: MutableMap<InventoryPosition, InteractiveItem?> = mutableMapOf()
 
     // constructs the default content map
@@ -107,9 +107,9 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
                 val toColumn = toPos.column
 
                 for (row in fromRow..toRow) {
-                    for (column in fromColumn..toColumn) {
-                        if (row != fromRow && row != toRow && column != fromColumn && column != toColumn) continue
-                        setItem(row, column, item)
+                    for (col in fromColumn..toColumn) {
+                        row * this.inventory.size.rows + col
+                        setItem(row, col, item)
                     }
                 }
             }
@@ -169,7 +169,13 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
     }
 
     override fun isPositionTaken(pos: InventoryPosition): Boolean {
-        return this.contents[pos] == null
+        return this.contents[pos] != null
+    }
+
+    override fun getPositionOfItem(item: InteractiveItem): InventoryPosition? {
+        var result: InventoryPosition? = null
+        for (entry in this.contents.entries) if (entry.value != null && entry.value == item) result = entry.key
+        return result
     }
 
     override fun getFirstEmptySlot(): InventoryPosition? {

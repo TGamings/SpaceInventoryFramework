@@ -4,3 +4,5 @@ main: net.spacetivity.inventory.SpaceInventoryBootstrap
 api-version: 1.19
 authors:
   - TGamings
+commands:
+  test:

@@ -31,6 +31,7 @@ interface InventoryController {
     fun clearSlot(pos: InventoryPosition)
 
     fun isPositionTaken(pos: InventoryPosition): Boolean
+    fun getPositionOfItem(item: InteractiveItem): InventoryPosition?
     fun getFirstEmptySlot(): InventoryPosition?
     fun getItem(position: InventoryPosition): InteractiveItem?
     fun getItem(row: Int, column: Int): InteractiveItem?

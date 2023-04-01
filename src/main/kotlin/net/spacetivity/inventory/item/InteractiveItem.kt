@@ -1,30 +1,30 @@
 package net.spacetivity.inventory.item
 
 import net.kyori.adventure.text.Component
+import net.spacetivity.inventory.api.InventoryController
 import net.spacetivity.inventory.item.InteractiveItem.Modification.*
+import net.spacetivity.inventory.utils.MathUtils
 import org.bukkit.Material
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 
-data class InteractiveItem(val item: ItemStack, val action: (InventoryPosition, InventoryClickEvent) -> Unit) {
+data class InteractiveItem(var item: ItemStack, val action: (InventoryPosition, InventoryClickEvent) -> Unit) {
 
     fun runAction(position: InventoryPosition, event: InventoryClickEvent) = this.action.invoke(position, event)
 
-    fun update(modification: Modification, vararg values: Any) {
+    fun update(controller: InventoryController, modification: Modification, vararg values: Any) {
         if (values.size > 1)
             throw UnsupportedOperationException("There are no more then one values allowed! Current size: ${values.size}")
 
         val newValue = values[0]
+        val tempItemMeta = this.item.itemMeta
+
         when (modification) {
             DISPLAY_NAME -> {
                 if (newValue !is String)
                     throw UnsupportedOperationException("'newValue' is not an String!")
 
-                this.item.itemMeta.displayName(Component.text(newValue))
-                update(ITEM_META, this.item.itemMeta)
+                tempItemMeta.displayName(Component.text(newValue))
             }
 
             LORE -> {
@@ -34,8 +34,7 @@ data class InteractiveItem(val item: ItemStack, val action: (InventoryPosition, 
                 @Suppress("UNCHECKED_CAST") val raw: Array<String> = newValue as Array<String>
                 val lore = raw.map { line -> Component.text(line) }.toList()
 
-                this.item.itemMeta.lore(lore)
-                update(ITEM_META, this.item.itemMeta)
+                tempItemMeta.lore(lore)
             }
 
             AMOUNT -> {
@@ -45,10 +44,8 @@ data class InteractiveItem(val item: ItemStack, val action: (InventoryPosition, 
                 this.item.amount = newValue
             }
 
-            GLOWING -> {
-                this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1)
-                this.item.addItemFlags(ItemFlag.HIDE_ENCHANTS)
-                update(ITEM_META, this.item.itemMeta)
+            INCREMENT -> {
+                this.item.amount += newValue as Int
             }
 
             ENCHANTMENTS -> {
@@ -57,23 +54,23 @@ data class InteractiveItem(val item: ItemStack, val action: (InventoryPosition, 
 
                 newValue.performAction(this.item)
             }
-
-            ITEM_META -> {
-                if (newValue !is ItemMeta)
-                    throw UnsupportedOperationException("'newValue' is not an ItemMeta!")
-
-                this.item.itemMeta = newValue
-            }
         }
+
+        this.item.itemMeta = tempItemMeta
+
+        val positionOfItem = controller.getPositionOfItem(this)!!
+        val rawInventory = controller.getRawInventory()
+
+        rawInventory.remove(this.item.type)
+        rawInventory.setItem(MathUtils.positionToSlot(positionOfItem, controller.inventory.size.columns), this.item)
     }
 
     enum class Modification {
         DISPLAY_NAME,
         LORE,
         AMOUNT,
-        GLOWING,
-        ENCHANTMENTS,
-        ITEM_META
+        INCREMENT,
+        ENCHANTMENTS
     }
 
     companion object {

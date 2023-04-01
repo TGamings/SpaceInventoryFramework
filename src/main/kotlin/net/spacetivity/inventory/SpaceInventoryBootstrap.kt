@@ -14,7 +14,11 @@ class SpaceInventoryBootstrap : JavaPlugin() {
 
     override fun onEnable() {
         this.inventoryRepository = InventoryRepository()
-        server.pluginManager.registerEvents(InventoryPlayerListener(), this)
+
+        server.pluginManager.registerEvents(InventoryPlayerListener(this), this)
+
+        TestCommand(this)
+
     }
 
     override fun onDisable() {
