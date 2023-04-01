@@ -7,6 +7,7 @@ import net.spacetivity.inventory.item.InteractiveItem
 import net.spacetivity.inventory.item.InventoryPosition
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
 class TestInventory(holder: Player) : CustomInventory(holder, InventorySize.of(3, 9), "Test Inventory", false) {
 
@@ -21,12 +22,12 @@ class TestInventory(holder: Player) : CustomInventory(holder, InventorySize.of(3
 
         controller.addItemToRandomPosition(placeholder)
 
-//        controller.addItem(InteractiveItem.of(ItemStack(Material.SADDLE)) { pos, event ->
-//            val player = event.whoClicked as Player
-//            val currentItem = controller.getItem(pos)!!
-//            currentItem.update(InteractiveItem.Modification.DISPLAY_NAME, "<red>New Name!")
-//            player.closeInventory()
-//        })
+        controller.addItem(InteractiveItem.of(ItemStack(Material.SADDLE)) { pos, event ->
+            val player = event.whoClicked as Player
+            val currentItem = controller.getItem(pos)!!
+            currentItem.update(InteractiveItem.Modification.DISPLAY_NAME, "<red>New Name!")
+            player.closeInventory()
+        })
 
     }
 
