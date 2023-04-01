@@ -2,27 +2,19 @@ package net.spacetivity.inventory
 
 import net.spacetivity.inventory.logic.InventoryPlayerListener
 import net.spacetivity.inventory.logic.InventoryRepository
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
-class SpaceInventoryBootstrap : JavaPlugin() {
+class SpaceInventoryBootstrap {
 
+    lateinit var plugin: JavaPlugin
     lateinit var inventoryRepository: InventoryRepository
 
-    init {
+    fun init(plugin: JavaPlugin) {
         instance = this
-    }
-
-    override fun onEnable() {
+        this.plugin = plugin
         this.inventoryRepository = InventoryRepository()
-
-        server.pluginManager.registerEvents(InventoryPlayerListener(this), this)
-
-        TestCommand(this)
-
-    }
-
-    override fun onDisable() {
-
+        Bukkit.getServer().pluginManager.registerEvents(InventoryPlayerListener(this), plugin)
     }
 
     companion object {

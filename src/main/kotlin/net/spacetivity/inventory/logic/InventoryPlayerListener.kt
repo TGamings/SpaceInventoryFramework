@@ -13,9 +13,9 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
-class InventoryPlayerListener(private val plugin: SpaceInventoryBootstrap) : Listener {
+class InventoryPlayerListener(private val bootstrap: SpaceInventoryBootstrap) : Listener {
 
-    private val inventoryRepository: InventoryRepository = this.plugin.inventoryRepository
+    private val inventoryRepository: InventoryRepository = this.bootstrap.inventoryRepository
 
     @EventHandler
     fun onPlayerInventoryClick(event: InventoryClickEvent) {
@@ -48,7 +48,7 @@ class InventoryPlayerListener(private val plugin: SpaceInventoryBootstrap) : Lis
         if (!isInventoryValid(player, event.view.title())) return
 
         if (!customInventory.closeable) {
-            Bukkit.getScheduler().runTask(plugin, Runnable { customInventory.open() })
+            Bukkit.getScheduler().runTask(bootstrap.plugin, Runnable { customInventory.open() })
             return
         }
 
