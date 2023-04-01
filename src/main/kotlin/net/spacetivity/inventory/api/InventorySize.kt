@@ -9,7 +9,7 @@ data class InventorySize(val rows: Int, val columns: Int) {
     }
 
     companion object {
-        fun of(rows: Int, columns: Int): InventorySize = InventorySize(rows, columns)
+        fun of(rows: Int, columns: Int) = InventorySize(rows, columns)
     }
 
 }

@@ -42,8 +42,7 @@ class InventoryPaginationImpl(private val controller: InventoryController) : Inv
 
     override fun toLastPage() {
         val pageIds: List<Int> = this.pageItems.keys().toList()
-        val lastPageId = pageIds[pageIds.size - 1]
-        this.index = lastPageId
+        this.index = pageIds[pageIds.size - 1]
         refreshPage()
     }
 
