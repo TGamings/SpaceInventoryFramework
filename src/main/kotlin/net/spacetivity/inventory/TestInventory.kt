@@ -37,7 +37,7 @@ class TestInventory(holder: Player) : CustomInventory(holder, InventorySize.of(3
     }
 
     override fun setupUsableSlots(usableSlots: MutableList<InventoryPosition>) {
-        // usableSlots.add(InventoryPosition.of(0, 1))
+        // usableSlots.add(InventoryPosition.of(0, 1)) 1
     }
 
 }
