@@ -2,6 +2,7 @@ package net.spacetivity.inventory.item
 
 import net.kyori.adventure.text.Component
 import net.spacetivity.inventory.api.InventoryController
+import net.spacetivity.inventory.api.InventoryPagination
 import net.spacetivity.inventory.item.InteractiveItem.Modification.*
 import net.spacetivity.inventory.utils.MathUtils
 import org.bukkit.Material
@@ -76,7 +77,15 @@ data class InteractiveItem(var item: ItemStack, val action: (InventoryPosition, 
     companion object {
 
         fun placeholder(material: Material): InteractiveItem {
-            return of(ItemStack(material))
+            return of(makeItemStack(material))
+        }
+
+        fun nextPage(item: ItemStack, pagination: InventoryPagination): InteractiveItem {
+            return of(item) { _, _ -> pagination.toNextPage() }
+        }
+
+        fun previousPage(item: ItemStack, pagination: InventoryPagination): InteractiveItem {
+            return of(item) { _, _ -> pagination.toPreviousPage() }
         }
 
         fun of(item: ItemStack): InteractiveItem {
@@ -85,6 +94,14 @@ data class InteractiveItem(var item: ItemStack, val action: (InventoryPosition, 
 
         fun of(item: ItemStack, action: (InventoryPosition, InventoryClickEvent) -> Unit): InteractiveItem {
             return InteractiveItem(item, action)
+        }
+
+        private fun makeItemStack(material: Material): ItemStack {
+            val itemStack = ItemStack(material)
+            val itemMeta = itemStack.itemMeta
+            itemMeta.displayName(Component.text(" "))
+            itemStack.itemMeta = itemMeta
+            return itemStack
         }
 
     }
