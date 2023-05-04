@@ -15,6 +15,7 @@ interface InventoryController {
 
     // item functions
 
+    fun placeholder(pos: InventoryPosition, vararg material: Material)
     fun placeholder(pos: InventoryPosition, material: Material)
     fun placeholder(row: Int, column: Int, material: Material)
     fun setItem(row: Int, column: Int, item: InteractiveItem)

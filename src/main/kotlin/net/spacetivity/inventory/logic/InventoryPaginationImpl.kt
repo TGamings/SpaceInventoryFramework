@@ -71,7 +71,7 @@ class InventoryPaginationImpl(private val controller: InventoryController) : Inv
         var pageIndex = 0
 
         for (i in items.indices) {
-            if (i % itemsPerPage == 0) pageIndex = i / itemsPerPage
+            if (i % this.itemsPerPage == 0) pageIndex = i / this.itemsPerPage
             this.pageItems.put(pageIndex, items[i])
         }
 

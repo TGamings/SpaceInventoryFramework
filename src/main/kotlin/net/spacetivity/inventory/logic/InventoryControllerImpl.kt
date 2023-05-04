@@ -1,6 +1,7 @@
 package net.spacetivity.inventory.logic
 
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import net.spacetivity.inventory.SpaceInventoryBootstrap
 import net.spacetivity.inventory.api.CustomInventory
 import net.spacetivity.inventory.api.InventoryController
 import net.spacetivity.inventory.api.InventoryController.FillType.*
@@ -24,6 +25,16 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
             this.contents[MathUtils.slotToPosition(i, this.inventory.size.columns)] = null
     }
 
+    override fun placeholder(pos: InventoryPosition, vararg material: Material) {
+        if (material.isEmpty()) {
+            val exception = NullPointerException("Default placeholder material is null!")
+            val placeholderMaterial = SpaceInventoryBootstrap.instance.defaultPlaceholderMaterial ?: throw exception
+            placeholder(pos, placeholderMaterial)
+        } else {
+            placeholder(pos, material[0])
+        }
+    }
+
     override fun placeholder(pos: InventoryPosition, material: Material) {
         setItem(pos, InteractiveItem.placeholder(material))
     }
@@ -33,11 +44,11 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
     }
 
     override fun setItem(row: Int, column: Int, item: InteractiveItem) {
-        contents[InventoryPosition.of(row, column)] = item
+        this.contents[InventoryPosition.of(row, column)] = item
     }
 
     override fun setItem(pos: InventoryPosition, item: InteractiveItem) {
-        contents[pos] = item
+        this.contents[pos] = item
     }
 
     override fun addItem(item: InteractiveItem) {
@@ -77,11 +88,7 @@ class InventoryControllerImpl(override val inventory: CustomInventory) : Invento
         }
     }
 
-    override fun fill(
-        type: InventoryController.FillType,
-        item: InteractiveItem,
-        vararg positions: InventoryPosition
-    ) {
+    override fun fill(type: InventoryController.FillType, item: InteractiveItem, vararg positions: InventoryPosition) {
         when (type) {
             ROW -> {
                 if (positions.size > 1)

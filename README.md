@@ -1,7 +1,6 @@
-
-
 # SpaceInventoryFramework
-Official inventory framework off all Spacetivity.net plugins which provides a lightweight api to enable a fast and bug free development process of guis.
+Simple to use, modern inventor framework for Paper >1.19 plugins which provides a lightweight api to enable a fast and bug free development process of guis.
+Will be expanded massive in the future. For suggestions please open an GitHub issue.
 
 ```kotlin
 package net.spacetivity.inventory.example
@@ -91,7 +90,9 @@ import org.bukkit.plugin.java.JavaPlugin
 class YourPlugin : JavaPlugin() {
 
     override fun onEnable() {
-        SpaceInventoryBootstrap.instance.init(this)
+        val bootstrap = SpaceInventoryBootstrap()
+        bootstrap.init(this)
+        bootstrap.init(this, Material.BLUE_STAINED_GLASS_PANE) // So you can set a default placeholder material.
     }
     
     override fun onDisable() {
